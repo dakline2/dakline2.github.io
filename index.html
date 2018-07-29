@@ -27,13 +27,35 @@ The x-axis is not an exact timeline, but instead contains ordinal values for eac
 The choice of bar colors was made as close as possible to be gold, silver, and bronze although this will vary from monitor to monitor. The x and y axis scales are also fixed when going from scene to scene and when comparing stacked vs side-by-side bars to make comparisons easier.
 
 <h2>Scenes</h2>
-There are 3 scenes included in this interactive slideshow. The first scene shows total metal counts for each Olympic year.
+There are 3 scenes included in this interactive slideshow. The first scene shows total medal counts for each Olympic year. The second scene shows the Summer Olympic medal counts for each year that they are held. The third scene shows the Winter Olympic medal counts for each year that they are held. The x and y axes are fixed for all scenes so that the graph is not rescaled for each dataset. This makes it easier for the user to compare medal counts and spot patterns. Within each scene the user may also switch from a stacked bar chart to a side-by-side bar chart without affecting the axes.<br><br>
+
+The <strong>structure</strong> of the scenes are very familiar bar charts which are best at visually comparing counts. The <strong>layout</strong> of the scenes is a linear slideshow which the user can select to go forward or backward in an intuitive manner. The order of the scenes is from combined counts to summer counts (most prominent) to winter counts (smaller Olympics). This storyline helps the user contrast the size of the summer and winter games. And to make the slideshow more interesting it uses D3 transitions between scenes and when switching from stacked to side-by-side views.<br><br>
+
+The user can <strong>interact</strong> with each scene in three ways. The first is to choose to switch from stacked to side-by-side views to explore variations in medal counts. The second is to use tooltips to see what city hosted each Olympics and what the medal counts are for each type. The third way to interact is to advance the slideshow forward or backward. The user knows about these interactions through a <strong>message</strong> in the main annotation box on each scene.
 
 <h2>Annotations</h2>
+Each scene has a primary annotation above the graph describing the scene and annotations are also included on the graph to <strong>highlight</strong> areas of the bar chart discussed in the primary annotation. The annotations are <strong>cleared</strong> between scenes and new annotations specific to the scene are added. The on-chart annotations are left in the same position when switching back and forth between stacked and side-by-side bar charts.  This is because it is easier to visually compare the graphs when the on-chart annotations do not move and do not flicker. All the annotations use a consistent <strong>template</strong> including font and color from scene to scene.
 
 <h2>Parameters</h2>
+The D3 Javascript (main.js) has three sets of <strong>medal count parameters</strong>, one for each scene, stored in d3.stacked() objects which are 3x38x3 arrays that keep track of the start and end counts for each section of the stacked bar. These are called medals_combined_stacked, medals_summer_stacked, and medals_winter_stacked. The current scene's data state is stored in <strong>medals_stacked</strong> which is used throughout the script to draw the current bar chart. There is also a <strong>scene_number state variable</strong> that keeps track of which scene is current. And state is also built into the HTML elements for the radio buttons and the about button.
+
+At the start of the visualization scene_number defaults to 1, the "stacked" radio button defaults to checked, and the about modal box defaults to modal.style.display = "none".
 
 <h2>Triggers</h2>
+<ul>
+   <li><strong>About button</strong> is at the top of the visualization, it is a bright color and when the user hovers over the button, it changes color, so this should be recognizable to the user as a selectable button. When the user clicks on the about button, the modal box is enabled directly in the HTML element with modal.style.display = "block". When the user clicks anywhere outside the modal text box, the modal text box is disabled with modal.style.display = "none". No other state is kept.<br><br>
+   In the main.js file, see btn.onclick() and span.onclick() for the triggers.<br><br>
+   </li>
+   <li><strong>Previous / Next buttons</strong> are at the top of the visualization, they are bright colors and when the user hovers over the buttons, they change color, so these should be recognizable to the user as selectable buttons to advance the slideshow. When the user pushes one of these, it causes the <strong>scene_number state variable</strong> to change, and updates the medals_stacked array to the next scene's dataset. This then updates the graph, the title, the y-axis label, and the annotations. The current scene number is displayed to the user next to the buttons.<br><br>
+   In the main.js file, see handle_previous() and handle_next() for the triggers.<br><br>
+   </li>
+   <li><strong>Stacked / Side By Side radio buttons</strong> are pointed out to the user in the primary scene annotation box. Selecting these cause the bar chart in the current scene to switch between stacked and side-by-side. State for this is stored in the radio button element itself.<br><br>
+   In the main.js file, see d3.selectAll("input").on("change", changed) for the trigger.<br><br>
+   </li>
+   <li><strong>Tooltips</strong> are pointed out to the user in the primary scene annotation box. Hovering over the bar chart sections cause the tooltip rectangle to become visible until the mouse is moved away.<br><br>
+   In the main.js file, see d3.select("#tooltip") for the trigger.<br><br>
+   </li>
+</ul>
             
 </p>
          </div>

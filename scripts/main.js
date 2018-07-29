@@ -42,7 +42,8 @@ d3.csv("data/olympics.csv", function(error, data) {
                         // are staggered every two years
    
    var year = [];
-   var city = [];
+   var summercity = [];
+   var wintercity = [];
    var gold = [];
    var silver = [];
    var bronze = [];
@@ -55,7 +56,8 @@ d3.csv("data/olympics.csv", function(error, data) {
 
    for (i = 0; i < num_games; i++) {
       year[i]         =  parseInt(data[i].Year);
-      city[i]         =  data[i].City;
+      summercity[i]   =  data[i].CitySummer;
+      wintercity[i]   =  data[i].CityWinter;
       gold[i]         =  parseInt(data[i].Gold);
       silver[i]       =  parseInt(data[i].Silver);
       bronze[i]       =  parseInt(data[i].Bronze);
@@ -93,9 +95,8 @@ d3.csv("data/olympics.csv", function(error, data) {
    var medals_combined_stacked = d3.stack().keys(d3.range(num_medals))(d3.transpose(medals_combined));
    var medals_summer_stacked = d3.stack().keys(d3.range(num_medals))(d3.transpose(medals_summer));
    var medals_winter_stacked = d3.stack().keys(d3.range(num_medals))(d3.transpose(medals_winter));
-   var medals_sideby = medals_combined;
    var medals_stacked = medals_combined_stacked;
-	
+
    var annotation_color = "blue";
    
    // Scene state variable
@@ -103,7 +104,6 @@ d3.csv("data/olympics.csv", function(error, data) {
    set_scene_1();
 
    // These should stay the same from graph to graph for consistency
-   var medals_sideby_max = d3.max(medals_combined, function(y) { return d3.max(y); });
    var medals_stacked_max  = d3.max(medals_combined_stacked, function(y) { return d3.max(y, function(d) { return d[1]; }); });  
 
    //--------------------------------------------------------------------------
@@ -149,7 +149,6 @@ d3.csv("data/olympics.csv", function(error, data) {
    //--------------------------------------------------------------------------
    function draw_svg() {
       // Example: http://bl.ocks.org/mbostock/3943967
-      
       var x_idx = d3.range(num_games);
 
       var svg = d3.select("svg");
@@ -205,10 +204,22 @@ d3.csv("data/olympics.csv", function(error, data) {
       var tooltip = d3.select("#tooltip");
 
       rect.on("mouseover", function(d,i) {
+         var tipstr;
+         switch (scene_number) {
+            case 1: tipstr = year[i] + ", " + (d[1]-d[0]) + " medals<BR>" + "Summer: " + summercity[i] + "<br>" + "Winter: " + wintercity[i];
+	              break;
+            case 2: tipstr = year[i] + ", " + (d[1]-d[0]) + " medals<BR>" + "Summer: " + summercity[i];
+                 break;
+            case 3: tipstr = year[i] + ", " + (d[1]-d[0]) + " medals<BR>" + "Winter: " + wintercity[i];
+                 break;
+      }
+
+
          tooltip.style("opacity", 1)
                 .style("left",(d3.event.pageX)+"px")
                 .style("top",(d3.event.pageY)+"px")
-                .html(year[i] + " " + city[i] + "<br>" + "Medal Count: " + (d[1]-d[0]))})
+//                .html(year[i] + "<br>" + "Summer: " + summercity[i] + "<br>" + "Winter: " + wintercity[i] + "<br>" + "Medal Count: " + (d[1]-d[0]))})
+                .html(tipstr)})
 	       .on("mouseout", function() { 
 	          tooltip.style("opacity", 0) });
 
@@ -228,7 +239,6 @@ d3.csv("data/olympics.csv", function(error, data) {
          .attr("x", -(height / 2 + 30))
          .style("text-anchor", "middle")
          .text(y_axis_label);      
-
 
       // This is putting the numbers on the x-axis
       g.append("g")
@@ -307,8 +317,6 @@ d3.csv("data/olympics.csv", function(error, data) {
    var x    = rtn[2];
    var y    = rtn[3];
 
-
-
    //--------------------------------------------------------------------------
    // Handling the next/previous buttons
 
@@ -367,7 +375,7 @@ d3.csv("data/olympics.csv", function(error, data) {
 
       // Add the scene annotation
       var annotate = document.getElementById("annotate");
-      annotate.innerHTML = "This slide shows the total medal counts awarded to individuals per Olympic year. From 1924 to 1992 the Winter Olympics were held in the same year as summer, then the games were staggered every two years. The Olympics were suspended during the World War years. While each event awards gold/silver/bronze medals, there is some variation in the medal counts due to variation in team sizes, ties, retroactive disqualifications, etc.<br><br>The user may explore this using the Side-by-Side selection and can hover over the bars to see where the games where held and the medal counts.";
+      annotate.innerHTML = "This slide shows the total medal counts awarded to individuals per Olympic year. From 1924 to 1992 the Winter Olympics were held in the same year as summer, then the games were staggered every two years. The Olympics were suspended during the World War years. While each event awards gold/silver/bronze medals, there is some variation in the medal counts due to variation in team sizes, ties, retroactive disqualifications, etc.<br><br>The user may explore this using the Side-by-Side selection and can hover over the bars to see where the games were held and the medal counts.";
 
    }
 
@@ -414,7 +422,7 @@ d3.csv("data/olympics.csv", function(error, data) {
 
       // Add the scene annotation
       var annotate = document.getElementById("annotate");
-      annotate.innerHTML = 'This slide shows only the Summer Olympic medal counts awarded to individuals per Olympic year. Wikipedia lists a large difference in the number of events held in <a href="https://en.wikipedia.org/wiki/1912_Summer_Olympics">1912</a>, <a href="https://en.wikipedia.org/wiki/1920_Summer_Olympics">1920</a>, and <a href="https://en.wikipedia.org/wiki/1924_Summer_Olympics">1924</a> which shows up in the medal counts. You may also observe the medal counts increasing in the late 1900s indicating an increase in the number of events.<br><br>The user may explore this using the Side-by-Side selection and may hover over the bars to see where the games where held and the medal counts.';
+      annotate.innerHTML = 'This slide shows only the Summer Olympic medal counts awarded to individuals per Olympic year. Wikipedia lists a large difference in the number of events held in <a href="https://en.wikipedia.org/wiki/1912_Summer_Olympics">1912</a>, <a href="https://en.wikipedia.org/wiki/1920_Summer_Olympics">1920</a>, and <a href="https://en.wikipedia.org/wiki/1924_Summer_Olympics">1924</a> which shows up in the medal counts. You may also observe the medal counts increasing in the late 1900s indicating an increase in the number of events.<br><br>The user may explore this using the Side-by-Side selection and may hover over the bars to see where the games were held and the medal counts.';
    }
 
    //--------------------------------------------------------------------------
@@ -441,14 +449,13 @@ d3.csv("data/olympics.csv", function(error, data) {
 
       // Add the scene annotation
       var annotate = document.getElementById("annotate");
-      annotate.innerHTML =  'This slide shows only the Winter Olympic medal counts awarded to individuals per Olympic year. The winter games began in 1924 and are much smaller than the summer games. 1992 was the last year the winter games were held in the same year as the summer games. Then the winter games were held again in 1994 such that they are staggered every 2 years with the summer games.<br><br>The user may explore this using the Side-by-Side selection and may hover over the bars to see where the games where held and the medal counts.';
+      annotate.innerHTML =  'This slide shows only the Winter Olympic medal counts awarded to individuals per Olympic year. The winter games began in 1924 and are much smaller than the summer games. 1992 was the last year the winter games were held in the same year as the summer games. Then the winter games were held again in 1994 such that they are staggered every 2 years with the summer games.<br><br>The user may explore this using the Side-by-Side selection and may hover over the bars to see where the games were held and the medal counts.';
    }
 
 
    //--------------------------------------------------------------------------
    function set_scene_1() {
       scene_number = 1;
-      medals_sideby  = medals_combined;
       medals_stacked = medals_combined_stacked;
       chart_title = "Olympic Medal Counts (Summer and Winter Combined)";
       y_axis_label = "Medal Counts (Summer and Winter Combined)";
@@ -457,7 +464,6 @@ d3.csv("data/olympics.csv", function(error, data) {
    //--------------------------------------------------------------------------
    function set_scene_2() {
       scene_number = 2;
-      medals_sideby  = medals_summer;
       medals_stacked = medals_summer_stacked;
       chart_title = "Olympic Medal Counts (Summer Only)";
       y_axis_label = "Medal Counts (Summer Only)";
@@ -466,7 +472,6 @@ d3.csv("data/olympics.csv", function(error, data) {
    //--------------------------------------------------------------------------
    function set_scene_3() {
       scene_number = 3;
-      medals_sideby  = medals_winter;
       medals_stacked = medals_winter_stacked;
       chart_title = "Olympic Medal Counts (Winter Only)";
       y_axis_label = "Medal Counts (Winter Only)";
@@ -483,6 +488,7 @@ d3.csv("data/olympics.csv", function(error, data) {
          case 3: set_scene_2();
               break;
       }
+
       // Re-draw the bar chart
       svg.selectAll("*").remove(); // https://stackoverflow.com/questions/10784018/how-can-i-remove-or-replace-svg-content
       rtn = draw_svg();
@@ -514,19 +520,10 @@ d3.csv("data/olympics.csv", function(error, data) {
 
 
 	
-   d3.selectAll("input")
-       .on("change", changed);
-
-
-//   var timeout = d3.timeout(function() {
-//     d3.select("input[value=\"stacked\"]")
-//         .property("checked", true)
-//         .dispatch("change");
-//   }, 2000);
+   d3.selectAll("input").on("change", changed);
 
 
    function changed() {
-//      timeout.stop();
       if (this.value === "grouped") transitionGrouped();
       else transitionStacked();
    }
