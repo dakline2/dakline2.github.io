@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Olympic Medal Counts</title>
+      <link href="styles/style.css" rel="stylesheet" type="text/css">
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> 
+   </head>
+
+
+   <body>
+      <h1 id="mytitle">Olympic Medal Counts (Summer and Winter Combined)</h1>
+      <! Modal example from https://www.w3schools.com/howto/howto_css_modals.asp>
+      <button class="button" id="about">About the Visualization</button>
+      <div id="myModal" class="modal">
+         <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>
+Doug Kline, University of Illinois, CS498 Data Viz Final Project 2018-07-29
+<h2>Narrative Visualization</h2>
+This visualization is an <strong>interactive slideshow</strong> of gold, silver, and bronze medal counts in the modern Olympics. This is using data from Randi H Griffin&#39;s Kaggle dataset at this <a href=" https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results/home ">link</a>. The dataset contains "120 years of Olympic history: athletes and results". The purpose of this data visualization project is to learn Javascript and D3 programming. While there are many interesting aspects of that dataset, for this project only the aggregated medal counts were pulled out using SAS Data Step into the olympics.csv file.<br><br>
+
+The interactive slideshow uses a stacked bar chart for each Olympic year showing the total gold, silver, and bronze medals awarded. This is based on counting individuals. While some medal counts for the Olympics will count a team win as one medal, in this count each individual receiving a medal will add to the aggregated count. Contrary to the assumption that there would be the same number of gold, silver, and bronze medals awarded for each event, there is some variation. Within each scene the user can change from a stacked bar chart to a side-by-side bar chart to explore those differences. The user can also use tooltips on each of bar segments to see the host city name and medal count. These are the interactive portions of this slideshow.<br><br>
+
+The x-axis is not an exact timeline, but instead contains ordinal values for each year the Olympics were held plus the 3 missing years during the World Wars. On the left side of the graph the spacing is every 4 years while on the right side it is every two years. The decision was made to not use a strict timeline to make the graph more compact and easier to understand.<br><br>
+
+The choice of bar colors was made as close as possible to be gold, silver, and bronze although this will vary from monitor to monitor. The x and y axis scales are also fixed when going from scene to scene and when comparing stacked vs side-by-side bars to make comparisons easier.
+
+<h2>Scenes</h2>
+There are 3 scenes included in this interactive slideshow. The first scene shows total metal counts for each Olympic year.
+
+<h2>Annotations</h2>
+
+<h2>Parameters</h2>
+
+<h2>Triggers</h2>
+            
+</p>
+         </div>
+      </div>
+      <button class="button" id="previous"><<< Previous Slide</button>
+      <button class="button" id="next">Next Slide >>></button>
+      <div id="scenenum">1 of 3</div>
+      <form>
+         <label><input type="radio" name="mode" value="stacked" checked> Stacked</label>
+         <label><input type="radio" name="mode" value="grouped"> Side By Side</label>
+      </form>
+      <div id="annotate"></div>
+      <svg width="960" height="450"></svg>
+      <div id="tooltip"></div>
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+      <script src="scripts/main.js"></script>
+   </body>
+</html>
+
